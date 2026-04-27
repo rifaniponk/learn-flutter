@@ -1,6 +1,7 @@
 abstract class CounterRepository {
   int getCounter();
   int incrementCounter();
+  int decrementCounter();
 }
 
 class InMemoryCounterRepository implements CounterRepository {
@@ -12,6 +13,12 @@ class InMemoryCounterRepository implements CounterRepository {
   @override
   int incrementCounter() {
     _counter++;
+    return _counter;
+  }
+
+  @override
+  int decrementCounter() {
+    _counter--;
     return _counter;
   }
 }

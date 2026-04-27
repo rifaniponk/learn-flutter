@@ -16,4 +16,9 @@ class HomeViewModel extends ChangeNotifier {
     _counter = _counterRepository.incrementCounter();
     notifyListeners();
   }
+
+  void decrementCounter() {
+    _counter = _counterRepository.decrementCounter();
+    notifyListeners();
+  }
 }
