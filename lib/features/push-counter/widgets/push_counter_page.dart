@@ -1,33 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/reusable_container.dart';
-import '../view_models/push_counter_view_model.dart';
+import '../providers/push_counter_providers.dart';
 
-class PushCounterPage extends StatelessWidget {
-  const PushCounterPage({super.key, required this.viewModel});
-
-  final PushCounterViewModel viewModel;
+class PushCounterPage extends ConsumerWidget {
+  const PushCounterPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ReusableContainer(
-        color: const Color.fromARGB(255, 204, 248, 255),
-        child: ListenableBuilder(
-          listenable: viewModel,
-          builder: (_, __) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Push Counter:'),
-                Text(
-                  '${viewModel.counter}',
-                  style: Theme.of(context).textTheme.headlineLarge,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final counter = ref.watch(pushCounterNotifierProvider);
+    final notifier = ref.read(pushCounterNotifierProvider.notifier);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      child: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: ReusableContainer(
+                color: const Color.fromARGB(255, 204, 248, 255),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Push Counter:'),
+                    Text(
+                      '$counter',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                  ],
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FloatingActionButton(
+                heroTag: 'decrementBtn',
+                onPressed: notifier.decrementCounter,
+                tooltip: 'Decrement',
+                child: const Icon(Icons.remove),
+              ),
+              FloatingActionButton(
+                heroTag: 'incrementBtn',
+                onPressed: notifier.incrementCounter,
+                tooltip: 'Increment',
+                child: const Icon(Icons.add),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

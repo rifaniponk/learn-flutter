@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../push-counter/view_models/push_counter_view_model.dart';
 import '../../push-counter/widgets/push_counter_page.dart';
 import '../../setting/widgets/setting_page.dart';
 import '../../todo-list/widgets/todo_list_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.viewModel, required this.title});
+  const HomePage({super.key, required this.title});
 
-  final PushCounterViewModel viewModel;
   final String title;
 
   @override
@@ -27,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final tabs = <Widget>[
-      PushCounterPage(viewModel: widget.viewModel),
+      const PushCounterPage(),
       const TodoListPage(),
       const SettingPage(),
     ];
@@ -37,8 +35,6 @@ class _HomePageState extends State<HomePage> {
       '${widget.title} - To Do List',
       '${widget.title} - Setting',
     ];
-
-    final isCounterTab = _selectedTabIndex == 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -54,33 +50,13 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.touch_app),
             label: 'Push Counter',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.checklist), label: 'To Do List'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.checklist),
+            label: 'To Do List',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Setting'),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: isCounterTab
-          ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FloatingActionButton(
-                    heroTag: 'decrementBtn',
-                    onPressed: widget.viewModel.decrementCounter,
-                    tooltip: 'Decrement',
-                    child: const Icon(Icons.remove),
-                  ),
-                  FloatingActionButton(
-                    heroTag: 'incrementBtn',
-                    onPressed: widget.viewModel.incrementCounter,
-                    tooltip: 'Increment',
-                    child: const Icon(Icons.add),
-                  ),
-                ],
-              ),
-            )
-          : null,
     );
   }
 }
