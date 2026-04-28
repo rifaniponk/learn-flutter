@@ -35,23 +35,37 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 12,
-        children: [
-          FloatingActionButton(
-            heroTag: 'decrementBtn',
-            onPressed: viewModel.decrementCounter,
-            tooltip: 'Decrement',
-            child: const Icon(Icons.remove),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 193, 227, 255),
+          border: Border.all(
+            color: const Color.fromARGB(255, 23, 40, 135),
+            width: 2,
           ),
-          FloatingActionButton(
-            heroTag: 'incrementBtn',
-            onPressed: viewModel.incrementCounter,
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
-          ),
-        ],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Flex(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            FloatingActionButton(
+              heroTag: 'decrementBtn',
+              onPressed: viewModel.decrementCounter,
+              tooltip: 'Decrement',
+              child: const Icon(Icons.remove),
+            ),
+            FloatingActionButton(
+              heroTag: 'incrementBtn',
+              onPressed: viewModel.incrementCounter,
+              tooltip: 'Increment',
+              child: const Icon(Icons.add),
+            ),
+          ],
+        ),
       ),
     );
   }
