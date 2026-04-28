@@ -18,6 +18,7 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         child: ReusableContainer(
+          color: const Color.fromARGB(255, 204, 248, 255),
           child: ListenableBuilder(
             listenable: viewModel,
             builder: (_, __) {
@@ -39,14 +40,6 @@ class HomePage extends StatelessWidget {
       floatingActionButton: Container(
         padding: const EdgeInsets.all(16),
         margin: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 193, 227, 255),
-          border: Border.all(
-            color: const Color.fromARGB(255, 23, 40, 135),
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
         child: Flex(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

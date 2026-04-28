@@ -17,8 +17,23 @@ class ReusableContainer extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 100,
-      color: color,
       padding: padding,
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 8,
+            offset: const Offset(2, 4),
+          ),
+        ],
+        color: color,
+        border: Border.all(
+          color: const Color.fromARGB(255, 23, 40, 135),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: child,
     );
   }
