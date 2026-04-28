@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'push_counter_page.dart';
-import 'setting_page.dart';
-import 'todo_list_page.dart';
-import '../view_models/home_view_model.dart';
+import '../../push-counter/view_models/push_counter_view_model.dart';
+import '../../push-counter/widgets/push_counter_page.dart';
+import '../../setting/widgets/setting_page.dart';
+import '../../todo-list/widgets/todo_list_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.viewModel, required this.title});
 
-  final HomeViewModel viewModel;
+  final PushCounterViewModel viewModel;
   final String title;
 
   @override

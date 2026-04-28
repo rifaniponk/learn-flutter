@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import '../data/counter_repository.dart';
 
-class HomeViewModel extends ChangeNotifier {
-  HomeViewModel({required CounterRepository counterRepository})
+class PushCounterViewModel extends ChangeNotifier {
+  PushCounterViewModel({required CounterRepository counterRepository})
     : _counterRepository = counterRepository,
       _counter = counterRepository.getCounter();
 

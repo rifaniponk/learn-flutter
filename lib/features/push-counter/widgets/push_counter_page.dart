@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../shared/widgets/reusable_container.dart';
-import '../view_models/home_view_model.dart';
+import '../view_models/push_counter_view_model.dart';
 
 class PushCounterPage extends StatelessWidget {
   const PushCounterPage({super.key, required this.viewModel});
 
-  final HomeViewModel viewModel;
+  final PushCounterViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {

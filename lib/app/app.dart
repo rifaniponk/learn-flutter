@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../features/home/data/counter_repository.dart';
-import '../features/home/view_models/home_view_model.dart';
 import '../features/home/widgets/home_page.dart';
+import '../features/push-counter/data/counter_repository.dart';
+import '../features/push-counter/view_models/push_counter_view_model.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -13,18 +13,20 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final CounterRepository _counterRepository;
-  late final HomeViewModel _homeViewModel;
+  late final PushCounterViewModel _pushCounterViewModel;
 
   @override
   void initState() {
     super.initState();
     _counterRepository = InMemoryCounterRepository();
-    _homeViewModel = HomeViewModel(counterRepository: _counterRepository);
+    _pushCounterViewModel = PushCounterViewModel(
+      counterRepository: _counterRepository,
+    );
   }
 
   @override
   void dispose() {
-    _homeViewModel.dispose();
+    _pushCounterViewModel.dispose();
     super.dispose();
   }
 
@@ -37,7 +39,7 @@ class _AppState extends State<App> {
           seedColor: const Color.fromARGB(255, 201, 102, 22),
         ),
       ),
-      home: HomePage(viewModel: _homeViewModel, title: 'Flutter Demo'),
+      home: HomePage(viewModel: _pushCounterViewModel, title: 'Flutter Demo'),
     );
   }
 }
