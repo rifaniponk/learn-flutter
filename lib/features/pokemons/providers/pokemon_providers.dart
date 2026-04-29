@@ -1,10 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/pokemon_repository.dart';
+import '../data/services/pokemon_api_service.dart';
 import '../models/pokemon_summary.dart';
 
+final pokemonApiServiceProvider = Provider<PokemonApiService>(
+  (_) => PokemonApiService(),
+);
+
 final pokemonRepositoryProvider = Provider<PokemonRepository>(
-  (_) => PokemonRepository(),
+  (ref) => PokemonRepository(
+    apiService: ref.read(pokemonApiServiceProvider),
+  ),
 );
 
 final pokemonListProvider = AsyncNotifierProvider<PokemonListController, List<PokemonSummary>>(
