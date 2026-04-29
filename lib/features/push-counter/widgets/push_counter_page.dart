@@ -19,7 +19,6 @@ class PushCounterPage extends ConsumerWidget {
           Expanded(
             child: Center(
               child: ReusableContainer(
-                color: const Color.fromARGB(255, 204, 248, 255),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
