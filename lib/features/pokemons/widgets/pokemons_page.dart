@@ -43,7 +43,12 @@ class PokemonsPage extends ConsumerWidget {
           ),
         ),
       ),
-      data: (pokemons) => PokemonsGrid(pokemons: pokemons),
+      data: (data) => PokemonsGrid(
+        pokemons: data.pokemons,
+        hasMore: data.hasMore,
+        isLoadingMore: data.isLoadingMore,
+        onLoadMore: () => ref.read(pokemonListProvider.notifier).loadMore(),
+      ),
     );
   }
 }
