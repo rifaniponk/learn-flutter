@@ -3,21 +3,45 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/todo_provider.dart';
 
-class TodoListPage extends ConsumerWidget {
+class TodoListPage extends ConsumerStatefulWidget {
   const TodoListPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TodoListPage> createState() => _TodoListPageState();
+}
+
+class _TodoListPageState extends ConsumerState<TodoListPage> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+    _focusNode = FocusNode();
+    _focusNode.requestFocus();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _addTask() {
+    final notifier = ref.read(todoListNotifierProvider.notifier);
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+    notifier.addTodo(text);
+    _controller.clear();
+    _focusNode.requestFocus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final todos = ref.watch(todoListNotifierProvider);
     final notifier = ref.read(todoListNotifierProvider.notifier);
-
-    TextEditingController controller = TextEditingController();
-
-    void addTask() {
-      if (controller.text.isEmpty) return;
-      notifier.addTodo(controller.text);
-      controller.clear();
-    }
 
     return Container(
       padding: EdgeInsets.all(16),
@@ -28,14 +52,15 @@ class TodoListPage extends ConsumerWidget {
             children: [
               Expanded(
                 child: TextField(
-                  controller: controller,
+                  controller: _controller,
+                  focusNode: _focusNode,
                   decoration: InputDecoration(hintText: 'Enter a task'),
                   onSubmitted: (value) {
-                    addTask();
+                    _addTask();
                   },
                 ),
               ),
-              ElevatedButton(onPressed: addTask, child: Text('Add')),
+              ElevatedButton(onPressed: _addTask, child: Text('Add')),
             ],
           ),
           Expanded(
