@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../../models/pokemon_api_item.dart';
+import '../models/pokemon_api_item.dart';
 
 class PokemonApiService {
   PokemonApiService({http.Client? client}) : _client = client ?? http.Client();

@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/pokemon_repository.dart';
-import '../data/services/pokemon_api_service.dart';
 import '../models/pokemon_list_state.dart';
+import '../services/pokemon_api_service.dart';
 
 final pokemonApiServiceProvider = Provider<PokemonApiService>(
   (_) => PokemonApiService(),

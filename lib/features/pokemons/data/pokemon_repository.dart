@@ -1,5 +1,5 @@
-import 'services/pokemon_api_service.dart';
 import '../models/pokemon_summary.dart';
+import '../services/pokemon_api_service.dart';
 
 class PokemonRepository {
   PokemonRepository({
