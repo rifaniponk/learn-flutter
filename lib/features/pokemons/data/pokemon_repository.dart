@@ -40,8 +40,23 @@ class PokemonRepository {
         name: detail.name,
         height: detail.height,
         weight: detail.weight,
+        baseExperience: detail.baseExperience,
+        isDefault: detail.isDefault,
+        order: detail.order,
+        species: detail.species,
         types: detail.types,
         imageUrl: _buildArtworkUrl(detail.id),
+        abilities: detail.abilities,
+        moves: detail.moves,
+        forms: detail.forms,
+        heldItems: detail.heldItems,
+        stats: detail.stats,
+        gameIndices: detail.gameIndices,
+        frontDefaultSprite: detail.frontDefaultSprite,
+        frontShinySprite: detail.frontShinySprite,
+        backDefaultSprite: detail.backDefaultSprite,
+        criesLatest: detail.criesLatest,
+        criesLegacy: detail.criesLegacy,
       );
     } catch (e) {
       throw Exception('PokeAPI error while fetching pokemon detail: $e');
