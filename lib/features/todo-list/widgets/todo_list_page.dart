@@ -50,11 +50,26 @@ class TodoListPage extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(
-                    todos[index],
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                  child: Flex(
+                    direction: Axis.horizontal,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        todos[index],
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          notifier.removeTodo(todos[index]);
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
