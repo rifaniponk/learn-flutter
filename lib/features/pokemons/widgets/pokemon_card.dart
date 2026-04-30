@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import '../models/pokemon_summary.dart';
 
 class PokemonCard extends StatelessWidget {
-  const PokemonCard({super.key, required this.pokemon});
+  const PokemonCard({
+    super.key,
+    required this.pokemon,
+    this.onTap,
+  });
 
   final PokemonSummary pokemon;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -18,33 +23,36 @@ class PokemonCard extends StatelessWidget {
       elevation: 2,
       shadowColor: Theme.of(context).colorScheme.shadow,
       surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.catching_pokemon, size: 48),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.catching_pokemon, size: 48),
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _capitalize(pokemon.name),
-              style: Theme.of(context).textTheme.titleSmall,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '#${_formatId(pokemon.id)}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
+              const SizedBox(height: 8),
+              Text(
+                _capitalize(pokemon.name),
+                style: Theme.of(context).textTheme.titleSmall,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '#${_formatId(pokemon.id)}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import '../models/pokemon_detail.dart';
 import '../models/pokemon_summary.dart';
 import '../services/pokemon_api_service.dart';
 
@@ -29,6 +30,24 @@ class PokemonRepository {
     }
   }
 
+  Future<PokemonDetail> fetchPokemonDetail({
+    required int id,
+  }) async {
+    try {
+      final detail = await _apiService.fetchPokemonDetail(id: id);
+      return PokemonDetail(
+        id: detail.id,
+        name: detail.name,
+        height: detail.height,
+        weight: detail.weight,
+        types: detail.types,
+        imageUrl: _buildArtworkUrl(detail.id),
+      );
+    } catch (e) {
+      throw Exception('PokeAPI error while fetching pokemon detail: $e');
+    }
+  }
+
   int _extractIdFromUrl(String url) {
     // PokeAPI urls are like: https://pokeapi.co/api/v2/pokemon/1/
     final segments = Uri.parse(url).pathSegments;
@@ -38,5 +57,8 @@ class PokemonRepository {
     );
     return int.tryParse(lastNonEmpty) ?? 0;
   }
+
+  String _buildArtworkUrl(int id) =>
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png';
 }
 

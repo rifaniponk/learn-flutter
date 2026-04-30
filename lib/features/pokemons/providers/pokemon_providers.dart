@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/pokemon_repository.dart';
+import '../models/pokemon_detail.dart';
 import '../models/pokemon_list_state.dart';
 import '../services/pokemon_api_service.dart';
 
@@ -17,6 +18,14 @@ final pokemonRepositoryProvider = Provider<PokemonRepository>(
 final pokemonListProvider = AsyncNotifierProvider<PokemonListController, PokemonListState>(
   PokemonListController.new,
 );
+
+final pokemonDetailProvider = FutureProvider.family<PokemonDetail, int>((
+  ref,
+  pokemonId,
+) async {
+  final repository = ref.read(pokemonRepositoryProvider);
+  return repository.fetchPokemonDetail(id: pokemonId);
+});
 
 class PokemonListController extends AsyncNotifier<PokemonListState> {
   static const _pageSize = 20;

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/pokemon_api_item.dart';
+import '../models/pokemon_detail_api_item.dart';
 
 class PokemonApiService {
   PokemonApiService({http.Client? client}) : _client = client ?? http.Client();
@@ -49,6 +50,44 @@ class PokemonApiService {
           ),
         )
         .toList();
+  }
+
+  Future<PokemonDetailApiItem> fetchPokemonDetail({
+    required int id,
+  }) async {
+    final uri = Uri.parse('https://pokeapi.co/api/v2/pokemon/$id');
+
+    final response = await _client
+        .get(
+          uri,
+          headers: const {'Accept': 'application/json'},
+        )
+        .timeout(const Duration(seconds: 15));
+
+    if (response.statusCode != 200) {
+      final bodySnippet = response.body.isEmpty
+          ? ''
+          : ' Body: ${response.body.substring(0, response.body.length.clamp(0, 200))}';
+
+      throw Exception(
+        'PokeAPI request failed: HTTP ${response.statusCode}.$bodySnippet',
+      );
+    }
+
+    final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+    final typeEntries = decoded['types'] as List<dynamic>;
+
+    return PokemonDetailApiItem(
+      id: decoded['id'] as int,
+      name: decoded['name'] as String,
+      height: decoded['height'] as int,
+      weight: decoded['weight'] as int,
+      types: typeEntries
+          .map((entry) => entry as Map<String, dynamic>)
+          .map((entry) => entry['type'] as Map<String, dynamic>)
+          .map((type) => type['name'] as String)
+          .toList(),
+    );
   }
 }
 

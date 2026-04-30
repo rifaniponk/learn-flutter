@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/pokemon_summary.dart';
 import 'pokemon_card.dart';
+import 'pokemon_detail_page.dart';
 
 class PokemonsGrid extends StatelessWidget {
   const PokemonsGrid({
@@ -46,7 +47,16 @@ class PokemonsGrid extends StatelessWidget {
           }
 
           final pokemon = pokemons[index];
-          return PokemonCard(pokemon: pokemon);
+          return PokemonCard(
+            pokemon: pokemon,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => PokemonDetailPage(pokemonId: pokemon.id),
+                ),
+              );
+            },
+          );
         },
       ),
     );
