@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 import '../providers/todo_provider.dart';
 
@@ -11,6 +12,7 @@ class TodoListPage extends ConsumerStatefulWidget {
 }
 
 class _TodoListPageState extends ConsumerState<TodoListPage> {
+  final _formKey = GlobalKey<FormState>();
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
 
@@ -30,9 +32,10 @@ class _TodoListPageState extends ConsumerState<TodoListPage> {
   }
 
   void _addTask() {
+    if (_formKey.currentState?.validate() != true) return;
+
     final notifier = ref.read(todoListNotifierProvider.notifier);
     final text = _controller.text.trim();
-    if (text.isEmpty) return;
     notifier.addTodo(text);
     _controller.clear();
     _focusNode.requestFocus();
@@ -47,21 +50,33 @@ class _TodoListPageState extends ConsumerState<TodoListPage> {
       padding: EdgeInsets.all(16),
       child: Column(
         children: [
-          Row(
-            spacing: 16,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  focusNode: _focusNode,
-                  decoration: InputDecoration(hintText: 'Enter a task'),
-                  onSubmitted: (value) {
-                    _addTask();
-                  },
+          Form(
+            key: _formKey,
+            child: Row(
+              spacing: 16,
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _controller,
+                    focusNode: _focusNode,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter a task',
+                      labelText: 'Task',
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: FormBuilderValidators.transform<String>(
+                      (value) => value?.trim() ?? '',
+                      FormBuilderValidators.compose<String>([
+                        FormBuilderValidators.required(),
+                        FormBuilderValidators.maxLength(200),
+                      ]),
+                    ),
+                    onFieldSubmitted: (_) => _addTask(),
+                  ),
                 ),
-              ),
-              ElevatedButton(onPressed: _addTask, child: Text('Add')),
-            ],
+                ElevatedButton(onPressed: _addTask, child: const Text('Add')),
+              ],
+            ),
           ),
           Expanded(
             child: ListView.builder(
