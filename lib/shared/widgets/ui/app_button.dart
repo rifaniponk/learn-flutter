@@ -141,8 +141,19 @@ class _AppButtonState extends State<AppButton> {
     const restingDepth = 4.0;
     final depth = _pressed ? 0.0 : restingDepth;
 
+    final label = Text(
+      widget.label,
+      style: sizing.text.copyWith(
+        color: palette.foreground,
+        fontWeight: FontWeight.w700,
+      ),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+      textAlign: TextAlign.center,
+    );
+
     final content = Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: widget.fullWidth ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (widget.loading)
@@ -158,16 +169,10 @@ class _AppButtonState extends State<AppButton> {
           Icon(widget.icon, size: sizing.iconSize, color: palette.foreground),
           const SizedBox(width: AppTokens.space2),
         ],
-        Flexible(
-          child: Text(
-            widget.label,
-            style: sizing.text.copyWith(
-              color: palette.foreground,
-              fontWeight: FontWeight.w700,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+        if (widget.fullWidth)
+          Expanded(child: label)
+        else
+          label,
         if (widget.trailingIcon != null && !widget.loading) ...[
           const SizedBox(width: AppTokens.space2),
           Icon(
@@ -182,6 +187,7 @@ class _AppButtonState extends State<AppButton> {
     final button = AnimatedContainer(
       duration: AppTokens.durationFast,
       curve: AppTokens.curveStandard,
+      width: widget.fullWidth ? double.infinity : null,
       // Translate the button face down by `restingDepth - depth` so it
       // visually "compresses" into the shadow strip when pressed.
       transform: Matrix4.translationValues(0, restingDepth - depth, 0),
@@ -206,9 +212,15 @@ class _AppButtonState extends State<AppButton> {
       child: content,
     );
 
+    // Shadow uses only [Positioned] children; the face must stay non-positioned
+    // so this stack has a non-zero intrinsic width. Wrapping that stack in
+    // [IntrinsicWidth] produced a 0-wide button in rows (e.g. next to [Expanded]).
     final stack = SizedBox(
       height: sizing.height + restingDepth,
+      width: widget.fullWidth ? double.infinity : null,
       child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
         children: [
           // Bottom "shadow strip" — the floor the button presses into.
           if (enabled)
@@ -223,11 +235,12 @@ class _AppButtonState extends State<AppButton> {
                 ),
               ),
             ),
-          // The button face itself.
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
+          // The button face itself — widthFactor keeps the stack shrink-wrapped
+          // in a Row; without it, [Align] expands to max width and steals layout.
+          Align(
+            widthFactor: 1,
+            heightFactor: 1,
+            alignment: Alignment.topCenter,
             child: button,
           ),
         ],
@@ -247,9 +260,7 @@ class _AppButtonState extends State<AppButton> {
           onTapUp: (_) => _setPressed(false),
           onTapCancel: () => _setPressed(false),
           onTap: enabled ? widget.onPressed : null,
-          child: widget.fullWidth
-              ? SizedBox(width: double.infinity, child: stack)
-              : IntrinsicWidth(child: stack),
+          child: stack,
         ),
       ),
     );

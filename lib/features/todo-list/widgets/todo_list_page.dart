@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
+import '../../../app/tokens.dart';
 import '../../../shared/dialogs/show_confirm_dialog.dart';
+import '../../../shared/widgets/ui/ui.dart';
 import '../providers/todo_provider.dart';
 
 class TodoListPage extends ConsumerStatefulWidget {
@@ -58,7 +60,7 @@ class _TodoListPageState extends ConsumerState<TodoListPage> {
             'Are you sure you want to delete:',
             style: theme.textTheme.bodyMedium,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppTokens.space2),
           Text(todo, style: theme.textTheme.titleSmall),
         ],
       ),
@@ -71,78 +73,137 @@ class _TodoListPageState extends ConsumerState<TodoListPage> {
   @override
   Widget build(BuildContext context) {
     final todos = ref.watch(todoListNotifierProvider);
+    final textTheme = Theme.of(context).textTheme;
 
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Form(
-            key: _formKey,
-            child: Row(
-              spacing: 16,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter a task',
-                      labelText: 'Task',
-                    ),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: FormBuilderValidators.transform<String>(
-                      (value) => value?.trim() ?? '',
-                      FormBuilderValidators.compose<String>([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.maxLength(200),
-                      ]),
-                    ),
-                    onFieldSubmitted: (_) => _addTask(),
-                  ),
-                ),
-                ElevatedButton(onPressed: _addTask, child: const Text('Add')),
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppTokens.space5,
+            AppTokens.space4,
+            AppTokens.space5,
+            AppTokens.space2,
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.only(top: 16),
-              itemCount: todos.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: EdgeInsets.all(12),
-                  margin: EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(10),
+          child: Text(
+            'Jot something down — keep it short and actionable.',
+            style: textTheme.bodyMedium,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTokens.space5),
+          child: AppCard(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: AppTokens.space4,
+                      bottom: AppTokens.space2,
+                    ),
+                    child: Text(
+                      'Task',
+                      style: textTheme.labelMedium?.copyWith(
+                        color: AppTokens.ink700,
+                      ),
+                    ),
                   ),
-                  child: Flex(
-                    direction: Axis.horizontal,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        todos[index],
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
+                      Expanded(
+                        child: AppTextField(
+                          controller: _controller,
+                          focusNode: _focusNode,
+                          hint: 'What needs doing?',
+                          prefixIcon: Icons.edit_note_rounded,
+                          textInputAction: TextInputAction.done,
+                          autovalidateMode:
+                              AutovalidateMode.onUserInteraction,
+                          validator: FormBuilderValidators.transform<String>(
+                            (value) => value?.trim() ?? '',
+                            FormBuilderValidators.compose<String>([
+                              FormBuilderValidators.required(),
+                              FormBuilderValidators.maxLength(200),
+                            ]),
+                          ),
+                          onSubmitted: (_) => _addTask(),
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          _confirmDeleteTodo(todos[index]);
-                        },
-                        icon: Icon(
-                          Icons.delete,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
+                      const SizedBox(width: AppTokens.space3),
+                      AppButton(
+                        label: 'Add',
+                        icon: Icons.add_rounded,
+                        onPressed: _addTask,
                       ),
                     ],
                   ),
-                );
-              },
+                ],
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: todos.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTokens.space6),
+                    child: AppCard(
+                      variant: AppCardVariant.flat,
+                      child: Text(
+                        'Nothing here yet. Add your first task above.',
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: AppTokens.ink500,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : ListView.separated(
+                  padding: const EdgeInsets.all(AppTokens.space5),
+                  itemCount: todos.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(height: AppTokens.space3),
+                  itemBuilder: (context, index) {
+                    final task = todos[index];
+                    return AppCard(
+                      variant: AppCardVariant.flat,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppTokens.space3,
+                        vertical: AppTokens.space1,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppTokens.space2,
+                                horizontal: AppTokens.space2,
+                              ),
+                              child: Text(
+                                task,
+                                style: textTheme.bodyLarge,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () => _confirmDeleteTodo(task),
+                            icon: const Icon(Icons.delete_outline_rounded),
+                            style: IconButton.styleFrom(
+                              foregroundColor: AppTokens.danger,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
     );
   }
 }

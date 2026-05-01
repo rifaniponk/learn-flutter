@@ -24,6 +24,8 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
     this.enabled = true,
     this.autofocus = false,
+    this.focusNode,
+    this.autovalidateMode,
   });
 
   final TextEditingController? controller;
@@ -42,6 +44,8 @@ class AppTextField extends StatelessWidget {
   final int maxLines;
   final bool enabled;
   final bool autofocus;
+  final FocusNode? focusNode;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +70,15 @@ class AppTextField extends StatelessWidget {
         ],
         TextFormField(
           controller: controller,
+          focusNode: focusNode,
           obscureText: obscureText,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           onChanged: onChanged,
           onFieldSubmitted: onSubmitted,
           validator: validator,
+          autovalidateMode:
+              autovalidateMode ?? AutovalidateMode.disabled,
           maxLines: obscureText ? 1 : maxLines,
           enabled: enabled,
           autofocus: autofocus,
