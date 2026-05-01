@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/widgets/ui/ui.dart';
 import '../../push-counter/widgets/push_counter_page.dart';
 import '../../setting/widgets/setting_page.dart';
 import '../../todo-list/widgets/todo_list_page.dart';
@@ -17,6 +18,31 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedTabIndex = 0;
 
+  static const _tabs = [
+    AppBottomNavItem(
+      icon: Icons.touch_app_outlined,
+      activeIcon: Icons.touch_app,
+      label: 'Counter',
+    ),
+    AppBottomNavItem(
+      icon: Icons.checklist_outlined,
+      activeIcon: Icons.checklist,
+      label: 'To-do',
+    ),
+    AppBottomNavItem(
+      icon: Icons.catching_pokemon_outlined,
+      activeIcon: Icons.catching_pokemon,
+      label: 'Pokémon',
+    ),
+    AppBottomNavItem(
+      icon: Icons.settings_outlined,
+      activeIcon: Icons.settings,
+      label: 'Settings',
+    ),
+  ];
+
+  static const _titles = ['Counter', 'To-do list', 'Pokémon', 'Settings'];
+
   void _onTabChanged(int index) {
     setState(() {
       _selectedTabIndex = index;
@@ -25,48 +51,40 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = <Widget>[
+    final pages = <Widget>[
       const PushCounterPage(),
       const TodoListPage(),
-      const SettingPage(),
       const PokemonsPage(),
+      const SettingPage(),
     ];
 
-    final titles = <String>[
-      '${widget.title} - Push Counter',
-      '${widget.title} - To Do List',
-      '${widget.title} - Setting',
-      '${widget.title} - Pokemons',
-    ];
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: scheme.surface,
+      // Custom app bar — no shadow, big personality title.
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(titles[_selectedTabIndex]),
+        title: Text(_titles[_selectedTabIndex]),
       ),
-      body: tabs[_selectedTabIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      // Animated page swap so tab switches feel intentional.
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 220),
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        transitionBuilder: (child, animation) => FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+        child: KeyedSubtree(
+          key: ValueKey(_selectedTabIndex),
+          child: pages[_selectedTabIndex],
+        ),
+      ),
+      // Custom floating bottom nav instead of Material's BottomNavigationBar.
+      bottomNavigationBar: AppBottomNav(
+        items: _tabs,
         currentIndex: _selectedTabIndex,
         onTap: _onTabChanged,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(
-          context,
-        ).colorScheme.onSurface.withValues(alpha: 0.6),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.touch_app),
-            label: 'Push Counter',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.checklist),
-            label: 'To Do List',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Setting'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.catching_pokemon),
-            label: 'Pokemons',
-          ),
-        ],
       ),
     );
   }
