@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
+import '../../../shared/dialogs/show_confirm_dialog.dart';
 import '../providers/todo_provider.dart';
 
 class TodoListPage extends ConsumerStatefulWidget {
@@ -41,10 +42,35 @@ class _TodoListPageState extends ConsumerState<TodoListPage> {
     _focusNode.requestFocus();
   }
 
+  Future<void> _confirmDeleteTodo(String todo) async {
+    final theme = Theme.of(context);
+    final confirmed = await showConfirmDialog(
+      context,
+      title: 'Delete task?',
+      cancelLabel: 'Cancel',
+      confirmLabel: 'Delete',
+      confirmIsDestructive: true,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Are you sure you want to delete:',
+            style: theme.textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(todo, style: theme.textTheme.titleSmall),
+        ],
+      ),
+    );
+
+    if (!context.mounted || confirmed != true) return;
+    ref.read(todoListNotifierProvider.notifier).removeTodo(todo);
+  }
+
   @override
   Widget build(BuildContext context) {
     final todos = ref.watch(todoListNotifierProvider);
-    final notifier = ref.read(todoListNotifierProvider.notifier);
 
     return Container(
       padding: EdgeInsets.all(16),
@@ -102,7 +128,7 @@ class _TodoListPageState extends ConsumerState<TodoListPage> {
                       ),
                       IconButton(
                         onPressed: () {
-                          notifier.removeTodo(todos[index]);
+                          _confirmDeleteTodo(todos[index]);
                         },
                         icon: Icon(
                           Icons.delete,
